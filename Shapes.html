@@ -1,0 +1,304 @@
+<html>
+
+<head>
+<title>Point Distributions</title>
+
+
+<!-- vertex shader - Our part in the geometry processing part of the pipeline happens here -->
+
+<script id="shader-vs" type="x-shader/x-vertex">
+
+    attribute vec3 aVertexPosition;
+
+    void main(){
+        gl_Position = vec4(aVertexPosition,1.0);
+        gl_PointSize = 2.0;
+    }
+</script>
+
+<!-- fragment shader - Pixel color is determined here -->
+<script id="shader-fs" type="x-shader/x-fragment">
+
+    void main(void) {
+        gl_FragColor = vec4(1.0,1.0,0.0,1.0);
+    }
+</script>
+
+<script type="text/javascript">
+
+    var gl;
+
+    // the shader that will be used by each piece of geometry (they could each use their own shader but in this case it will be the same)
+    var shaderProgram;
+    var canvas;
+
+    // ------------------------------------------------------------------------
+    function initializeAndStartRendering() {
+        initGL();
+        // uncomment when directed by the guide
+        document.getElementById('inp').value = 1;
+        document.getElementsByName('Shape')[0].checked = "checked";
+        createShaders();
+        if (gl) {
+            updateAndRender();
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    function initGL() {
+        
+        canvas = document.getElementById("webgl-canvas");
+        
+        try {
+            gl = canvas.getContext("webgl");
+
+            // Note: gl does not naturally have canvasWidth or canvasHeight
+            // We are attaching them to the object for convenience
+
+            gl.canvasWidth = canvas.width;
+            gl.canvasHeight = canvas.height;
+
+        } catch (e) {}
+
+        if (!gl) {
+            alert("Could not initialise WebGL, sorry :-(");
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    function createShaders() {
+       
+        var vertexShaderText = document.getElementById('shader-vs').textContent;
+        var vertexShader = createCompiledShader(gl, vertexShaderText, gl.VERTEX_SHADER);
+
+        var fragmentShaderText = document.getElementById('shader-fs').textContent;
+        var fragmentShader = createCompiledShader(gl, fragmentShaderText, gl.FRAGMENT_SHADER);
+
+     
+        // Create an empty gl "program" which will be composed of compiled shaders
+        shaderProgram = gl.createProgram();
+        gl.attachShader(shaderProgram, vertexShader);
+        gl.attachShader(shaderProgram, fragmentShader);
+
+        // Tell gl it's ready to go, link it
+        gl.linkProgram(shaderProgram);
+        if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+            alert("Could not initialise shaders");
+        }
+
+        gl.useProgram(shaderProgram);
+
+        shaderProgram.attributes = {
+            vertexPositionAttribute: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
+         };
+
+    }
+
+    // -----------------------------------------------------------------------
+     
+    function createCompiledShader(gl, shaderText, shaderType) {
+         var shader = gl.createShader(shaderType);
+    
+         gl.shaderSource(shader,shaderText);
+         gl.compileShader(shader);
+
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            alert(gl.getShaderInfoLog(shader));
+            console.log(gl.getShaderInfoLog(shader));
+            return null;
+        }
+        return shader;
+    }
+    function initVertexBuffers(n){
+        var e = document.getElementsByName('Shape');
+        var vertices;
+        if(e[0].checked)
+            vertices = new Float32Array(makeTriangle(n));
+        else if(e[1].checked)
+            vertices = new Float32Array(makeGrid(n));
+        else if( e[2].checked)
+            vertices = new Float32Array(makeRings(n));
+        else if(e[3].checked)
+            vertices = new Float32Array(sunflower(n));
+        else
+            vertices = new Float32Array(turnFraction(n));
+        
+
+        var vertexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffer);
+
+        gl.bufferData(gl.ARRAY_BUFFER,vertices,gl.STATIC_DRAW);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute,2,gl.FLOAT,false,0,0);
+        gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+        //return n*n;
+        return vertices.length/2;
+    }
+
+    function makeGrid(n){
+        if( n <= 0) n = 1;
+        var l = 1.99;
+        var step = l/n;
+        var xStart = l/-2 + (l/2)/n;
+   
+        var yStart = xStart  * -1;
+        // console.log(xStart +','+ yStart);
+        // console.log(step);
+      
+        var points = [];
+         for(let i = 0; i < n; i++){
+              var y = yStart - (step * i);
+            for(let j = 0; j < n;j++){
+                var x = xStart +  (step * j);
+                points.push(x);points.push(y);
+            }
+        }
+        
+        points.push(-1);points.push(0);
+        points.push(1);points.push(0);
+        points.push(0);points.push(-1);
+        points.push(0);points.push(1);
+        return points;
+
+    }
+    function makeTriangle(n){
+        if( n <= 0) n = 1;
+        var l = 1.99;
+        var step = l/n;
+        var yStart = l/2 - (l/2)/n;
+
+        var points=[];
+        for(let i = 0; i < n; i++){
+            var y = yStart - step * i;
+            var xStart = (-step * i) / 2
+            for(let j = 0; j <= i; j++){
+                var x = xStart + step * j;
+                points.push(x);points.push(y);
+            }
+
+        }
+
+        //console.log(points.length/2);
+        return points;
+    }
+    function makeRings(n){
+        if( n <= 0) n = 1;
+        var radius = 1; 
+        var step =  radius/n;
+        var points = [];
+        var r1 = 0;
+        while(r1 < radius ){
+            var deg1 = 0;
+            while(deg1 < 360 ){
+                var x = r1 * Math.cos(deg1 * (Math.PI / 180) );
+                var y = r1 * Math.sin(deg1 *  (Math.PI / 180) );
+                points.push(x);points.push(y);
+                deg1 += 1 / ( r1 * 10) ;
+            }
+            r1 += step;
+        }
+        return points;
+
+    }
+    function sunflower(n){
+        if( n <= 0) n = 1;
+        var turnFraction = ( (1 + Math.sqrt(5)) / 2 ) ;
+        //var turnFraction = n;
+        //var n = 1000;
+        var points = [];
+        for(let i = 0; i < n; i++){
+            var dst =  Math.sqrt(i / (n - 1.0)) ;
+            var angle = 2 * Math.PI * turnFraction * i;
+
+            var x = dst * Math.cos(angle );
+            var y = dst * Math.sin(angle );
+
+            points.push(x);points.push(y);
+
+        }
+        return points;
+    }
+    function turnFraction(n){
+        //var turnFraction = ( (1 + Math.sqrt(5)) / 2 ) ;
+        var turnFraction = n;
+        var p = 1000;
+        var points = [];
+        for(let i = 0; i < p; i++){
+            var dst =  Math.sqrt(i / (p - 1.0)) ;
+            var angle = 2 * Math.PI * turnFraction * i;
+
+            var x = dst * Math.cos(angle * (Math.PI / 180));
+            var y = dst * Math.sin(angle *(Math.PI / 180));
+
+            points.push(x);points.push(y);
+
+        }
+        return points;
+    }
+    function updateAndRender() {
+       // requestAnimationFrame(updateAndRender);
+
+        gl.viewport(0, 0,canvas.width ,canvas.height );
+        // this is a new frame so let's clear out whatever happened last frame
+        var n = (document.getElementById('inp').value);
+        if(n == null) n = 1;
+
+
+        n = initVertexBuffers(n);
+        gl.clearColor(0.0, 0.0,0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        gl.drawArrays(gl.POINTS,0,n);
+        //gl.drawArrays(gl.LINES,n,4);
+
+        
+    }
+
+    // -------------------------------------------------------------------------
+
+</script>
+
+</head>
+
+
+<body onload="initializeAndStartRendering();">
+
+    <canvas class="center" id="webgl-canvas" style="border: none;" width="512" height="512"></canvas>
+        <label id="la">Enter a number: </label>
+        <input class="center" name="inp" id="inp" type="number" onchange="updateAndRender();">
+
+        <input type="radio" id="Triangle" name="Shape"  onclick="updateAndRender();" >
+        <label for="Triangle">Triangle</label>
+
+        <input type="radio" id="Square" name="Shape"onclick="updateAndRender();"  >
+        <label for="Square">Grid</label>
+
+        <input type="radio" id="Rings" name="Shape"onclick="updateAndRender();"  >
+        <label for="Square">Rings</label>
+
+        <input type="radio" id="sunflower" name="Shape"onclick="updateAndRender();"  >
+        <label for="Square">Sunflower</label>
+
+        <input type="radio" id="turnFraction" name="Shape"onclick="updateAndRender();"  >
+        <label for="Square">Turn Fraction</label>
+</body>
+<style>
+    body{
+        text-align: center;
+    }
+    .center{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 1%;
+    }
+    #la{
+        background-color: aqua;
+        display: block;
+        text-align: center;
+        margin-top: 5%;
+    }
+
+
+</style>
+</html>
