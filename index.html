@@ -38,6 +38,7 @@
         // uncomment when directed by the guide
         document.getElementById('inp').value = 1;
         document.getElementsByName('Shape')[0].checked = "checked";
+        document.getElementsByName('type')[0].checked = "checked";
         createShaders();
         if (gl) {
             updateAndRender();
@@ -248,7 +249,11 @@
         gl.clearColor(0.0, 0.0,0.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        gl.drawArrays(gl.POINTS,0,n);
+        var e = document.getElementsByName('type');
+        if(e[0].checked)
+            gl.drawArrays(gl.POINTS,0,n);
+        else if(e[1].checked)
+            gl.drawArrays(gl.LINE_STRIP,0,n);
         //gl.drawArrays(gl.LINES,n,4);
 
         
@@ -264,6 +269,15 @@
 <body onload="initializeAndStartRendering();">
 
     <canvas class="center" id="webgl-canvas" style="border: none;" width="512" height="512"></canvas>
+    
+        <input type="radio" id="Points" name="type"  onclick="updateAndRender();" >
+        <label for="Triangle">Points</label>
+
+        <input type="radio" id="Lines" name="type"onclick="updateAndRender();"  >
+        <label for="Square">Line Strip</label>
+    
+    
+    
         <label id="la">Enter a number: </label>
         <input class="center" name="inp" id="inp" type="number" onchange="updateAndRender();">
 
