@@ -242,11 +242,20 @@
     // -------------------------------------------------------------------------
 
 </script>
+    
+ <link href="style.css" rel="stylesheet" type="text/css" />
 
 </head>
 
 
 <body onload="initializeAndStartRendering();">
+    
+    <nav>
+        <ul>
+            <li> <a href="index.html"> Distributions </a></li>
+             <li> <a href="curves.html"> Curves/Functions </a></li>
+        </ul>
+    </nav>
 
     <canvas class="center" id="webgl-canvas" style="border: none;" width="512" height="512"></canvas>
         
@@ -274,23 +283,5 @@
         <input type="radio" id="turnFraction" name="Shape"onclick="updateAndRender();"  >
         <label for="Square">Turn Fraction</label>
 </body>
-<style>
-    body{
-        text-align: center;
-    }
-    .center{
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 1%;
-    }
-    #la{
-        background-color: aqua;
-        display: block;
-        text-align: center;
-        margin-top: 5%;
-    }
 
-
-</style>
 </html>
