@@ -199,19 +199,17 @@
         return points;
     }
     function turnFraction(n){
-        //var turnFraction = ( (1 + Math.sqrt(5)) / 2 ) ;
-        var turnFraction = n;
-        var p = 1000;
         var points = [];
-        for(let i = 0; i < p; i++){
-            var dst =  Math.sqrt(i / (p - 1.0)) ;
-            var angle = 2 * Math.PI * turnFraction * i;
 
-            var x = dst * Math.cos(angle );
-            var y = dst * Math.sin(angle );
+        var x_vel = (n/2) * Math.cos( Math.PI / 4);
+        var y_vel = (n/2) * Math.sin( Math.PI/ 4 );
+        var x_i = -1;
+        var y_i = -1;
+        for(let i =0; i < 2; i+=.01){
+            var x = x_i + (x_vel * i);
+            var y = y_i + (y_vel * i) + ( .5 * -9.81 * i * i );
 
-            points.push(x);points.push(y);
-
+            points.push(x); points.push(y);
         }
         return points;
     }
@@ -281,7 +279,7 @@
         <label for="Square">Flower</label>
 
         <input type="radio" id="turnFraction" name="Shape"onclick="updateAndRender();"  >
-        <label for="Square">Turn Fraction</label>
+        <label for="Square">Projectile</label>
 </body>
 
 </html>
