@@ -267,6 +267,13 @@
 
 
 <body onload="initializeAndStartRendering();">
+    
+    <nav>
+        <ul>
+            <li> <a href="index.html"> Distributions </a></li>
+             <li> <a href="curves.html"> Curves/Functions </a></li>
+        </ul>
+    </nav>
 
     <canvas class="center" id="webgl-canvas" style="border: none;" width="512" height="512"></canvas>
     
@@ -311,6 +318,29 @@
         display: block;
         text-align: center;
         margin-top: 5%;
+    }
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+    }
+
+    li {
+        float: left;
+    }
+
+    li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+    li a:hover {
+        background-color: #111;
     }
 
 
