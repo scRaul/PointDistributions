@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Points</title>
+  <meta name="viewport" content="width=device-width",initial-scale="1.0">
+
+    <script src="app.js" defer ></script>
+    <script src="functions.js" ></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+
+    <canvas class="center" id="webgl-canvas" style="border: none;" width="512" height="512"></canvas>
+    
+        <input type="radio" id="Points" name="type"  onclick="updateAndRender();" >
+        <label for="Triangle">Points</label>
+
+        <input type="radio" id="Lines" name="type"onclick="updateAndRender();"  >
+        <label for="Square">Line Strip</label>
+    
+        <label id="la">Enter a number: </label>
+        <input class="center" name="inp" id="inp" type="number" onchange="updateAndRender();">
+
+        <input type="radio" id="Triangle" name="Shape"  onclick="updateAndRender();" >
+        <label for="Triangle">Triangle Formation</label>
+
+        <input type="radio" id="Square" name="Shape"onclick="updateAndRender();"  >
+        <label for="Square">Grid</label>
+
+        <input type="radio" id="Rings" name="Shape"onclick="updateAndRender();"  >
+        <label for="Square">Rings</label>
+
+        <input type="radio" id="sunflower" name="Shape"onclick="updateAndRender();"  >
+        <label for="Square">Sunflower</label>
+
+        <input type="radio" id="turnFraction" name="Shape"onclick="updateAndRender();"  >
+        <label for="Square">Turn Fraction</label>
+
+        <br>
+        <input type="radio" id="Linear" name="Shape"  onclick="updateAndRender();" >
+        <label for="Triangle">Linear</label>
+
+        <input type="radio" id="Exponential" name="Shape"onclick="updateAndRender();"  >
+        <label for="Square">Exponential</label>
+
+        <input type="radio" id="Wave" name="Shape"onclick="updateAndRender();"  >
+        <label for="Square">Wave</label>
+
+        <input type="radio" id="Flower" name="Shape"onclick="updateAndRender();"  >
+        <label for="Square">Flower</label>
+
+        <input type="radio" id="Projectile" name="Shape"onclick="updateAndRender();"  >
+        <label for="Square">Projectile</label>
+    
+</body>
+</html>
