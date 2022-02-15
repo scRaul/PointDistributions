@@ -80,6 +80,7 @@ function sunflower(n) {
 function turnFraction(n) {
     //var turnFraction = ( (1 + Math.sqrt(5)) / 2 ) ;
     var turnFraction = n/1000;
+    console.log(turnFraction);
     var p = 1000;
     var points = [];
     for (let i = 0; i < p; i++) {
